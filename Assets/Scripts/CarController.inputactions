@@ -71,11 +71,11 @@
                 },
                 {
                     "name": "",
-                    "id": "98de5f42-4ff2-47e7-819b-07e1c5798a77",
-                    "path": "",
+                    "id": "53374a6e-5047-4fcf-8bcd-8b90b684b541",
+                    "path": "<XRController>{LeftHand}/trigger",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Generic XR Controller",
                     "action": "BreakInput",
                     "isComposite": false,
                     "isPartOfComposite": false

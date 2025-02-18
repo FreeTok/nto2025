@@ -55,8 +55,7 @@ public class CarControllerVR : MonoBehaviour
 
     void OnLeverPositionChanged(int newPosition)
     {
-        Debug.Log($"Lever position changed  1234: {newPosition}");
-        // Здесь можно добавить логику, которая будет выполняться при изменении позиции рычага
+        _currentGear = newPosition;
     }
 
     private void FixedUpdate() {
@@ -95,8 +94,26 @@ public class CarControllerVR : MonoBehaviour
     }
 
     private void HandleMotor() {
-        frontLeftWheelCollider.motorTorque = verticalInput * motorForce;
-        frontRightWheelCollider.motorTorque = verticalInput * motorForce;
+
+        switch (_currentGear)
+        {
+            case 0:
+                breakForce = 1;
+                print("parking");
+                break;
+            case 1:
+                frontLeftWheelCollider.motorTorque = verticalInput * -motorForce;
+                frontRightWheelCollider.motorTorque = verticalInput * -motorForce;
+                break;
+            case 2:
+                frontLeftWheelCollider.motorTorque = verticalInput * motorForce;
+                frontRightWheelCollider.motorTorque = verticalInput * motorForce;
+                break;
+            case 3:
+                print("N");
+                break;
+        }
+        
         currentbreakForce = breakInput * breakForce;
         ApplyBreaking();
     }
