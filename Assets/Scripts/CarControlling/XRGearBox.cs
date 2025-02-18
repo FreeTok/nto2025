@@ -87,6 +87,15 @@ namespace UnityEngine.XR.Content.Interaction
         /// Events to trigger when the lever deactivates
         /// </summary>
         public UnityEvent onLeverDeactivate => m_OnLeverDeactivate;
+        
+        [SerializeField]
+        [Tooltip("Event that triggers when the lever position changes")]
+        UnityEvent<int> m_OnPositionChanged = new UnityEvent<int>();
+
+        /// <summary>
+        /// Event that triggers when the lever position changes
+        /// </summary>
+        public UnityEvent<int> onPositionChanged => m_OnPositionChanged;
 
         void Start()
         {
@@ -190,6 +199,7 @@ namespace UnityEngine.XR.Content.Interaction
         {
             // Здесь можно добавить логику, которая будет выполняться при изменении позиции рычага
             Debug.Log($"Lever position changed to {m_Position}");
+            m_OnPositionChanged.Invoke(m_Position);
         }
 
         void SetValue(int position, bool forceRotation = false)

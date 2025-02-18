@@ -527,7 +527,7 @@ MonoBehaviour:
   rearLeftWheelTransform: {fileID: 2050896603}
   rearRightWheelTransform: {fileID: 1729427492}
   wheel: {fileID: 941113426}
-  transmission: {fileID: 0}
+  gearBox: {fileID: 7459442141453763997}
   m_gasInputAction: {fileID: -5412876259225361906, guid: 020edf8e8d7adc248a55cd6898cb0bdb,
     type: 3}
   m_brakeInputAction: {fileID: 217960838575783279, guid: 020edf8e8d7adc248a55cd6898cb0bdb,
@@ -2304,6 +2304,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Position: 0
+  m_OnPositionChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -32,19 +32,37 @@ public class CarControllerVR : MonoBehaviour
     [SerializeField]
     private XRKnob wheel;
     [SerializeField]
-    private XRLever transmission;
+    private XRGearBox gearBox;
     
     [SerializeField] private InputActionReference m_gasInputAction, m_brakeInputAction;
+
+    private int _currentGear;
 
     //private void OnEnable()
     //{
     //    m_gasInputAction.EnableDirectAction();
     //    m_brakeInputAction.EnableDirectAction();
     //}
+    
+    void Start()
+    {
+        if (gearBox != null)
+        {
+            // Подписываемся на событие изменения позиции
+            gearBox.onPositionChanged.AddListener(OnLeverPositionChanged);
+        }
+    }
+
+    void OnLeverPositionChanged(int newPosition)
+    {
+        Debug.Log($"Lever position changed  1234: {newPosition}");
+        // Здесь можно добавить логику, которая будет выполняться при изменении позиции рычага
+    }
 
     private void FixedUpdate() {
         //print(m_gasInputAction.action?.ReadValue<float>());
-
+        
+        
         GetInput();
         HandleMotor();
         HandleSteering();
