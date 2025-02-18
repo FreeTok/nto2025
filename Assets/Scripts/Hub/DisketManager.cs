@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
 
 
 public class DisketManager : MonoBehaviour
@@ -15,7 +16,7 @@ public class DisketManager : MonoBehaviour
 
     Vector3 ClampVec(Vector3 start, Vector3 end, float cur, float an)
     {
-        return new Vector3(Mathf.Clamp(start.x, end.x, cur / an), Mathf.Clamp(start.y, end.y, cur / an), Mathf.Clamp(start.z, end.z, cur / an));
+        return  start + new Vector3((end.x - start.x) * Mathf.Clamp01(cur/an), (end.y - start.y) * Mathf.Clamp01(cur / an), (end.z - start.z) * Mathf.Clamp01(cur / an));
     }
 
     private void Update()
@@ -25,7 +26,9 @@ public class DisketManager : MonoBehaviour
             if(curTime < animTime)
             {
                 curTime += Time.deltaTime;
-                dsk.transform.position =  ClampVec(startPoint, endPoint, curTime, animTime);
+                dsk.transform.localPosition = ClampVec(startPoint, endPoint, curTime, animTime);
+                //print(curTime.ToString() + ' ' + animTime.ToString());
+                //Debug.Log(dsk.transform.localPosition);
             }
             else if(loggedState == 1)
             {
@@ -40,7 +43,10 @@ public class DisketManager : MonoBehaviour
         {
             loggedState = 1;
             dsk = other.gameObject;
-            dsk.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+            dsk.GetComponent<XRGrabInteractable>().enabled = false;
+            dsk.transform.SetParent(this.transform);
+            dsk.GetComponent<Rigidbody>().isKinematic = true;
+            //dsk.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
             dsk.transform.rotation.SetEulerAngles(startRotation);
             
         }
