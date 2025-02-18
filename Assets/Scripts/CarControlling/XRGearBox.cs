@@ -56,15 +56,6 @@ namespace UnityEngine.XR.Content.Interaction
         }
 
         /// <summary>
-        /// The value of the lever
-        /// </summary>
-        public int value
-        {
-            get => m_Value;
-            set => SetValue(value, true);
-        }
-
-        /// <summary>
         /// If enabled, the lever will snap to the value position when released
         /// </summary>
         public bool lockToValue { get; set; }
@@ -99,9 +90,8 @@ namespace UnityEngine.XR.Content.Interaction
 
         void Start()
         {
-            SetValue(m_Value, true);
+            SetValue(m_Position, true);
         }
-
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -123,7 +113,7 @@ namespace UnityEngine.XR.Content.Interaction
 
         void EndGrab(SelectExitEventArgs args)
         {
-            SetValue(m_Value, true);
+            SetValue(m_Position, true);
             m_Interactor = null;
         }
 
@@ -227,7 +217,7 @@ namespace UnityEngine.XR.Content.Interaction
 
         void OnValidate()
         {
-            SetHandleAngle(m_Value ? m_MaxAngle : m_MinAngle);
+            SetHandleAngle(m_MinAngle + m_Position * ((m_MaxAngle - m_MinAngle) / 3));
         }
     }
 }
