@@ -1,3 +1,4 @@
+using System;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
 
@@ -39,10 +40,6 @@ namespace UnityEngine.XR.Content.Interaction
         [SerializeField]
         [Tooltip("Events to trigger when the lever deactivates")]
         UnityEvent m_OnLeverDeactivate = new UnityEvent();
-        
-        [SerializeField]
-        [Tooltip("The current position of the lever (0 to 3)")]
-        int m_Position = 0;
 
         IXRSelectInteractor m_Interactor;
 
@@ -53,6 +50,14 @@ namespace UnityEngine.XR.Content.Interaction
         {
             get => m_Handle;
             set => m_Handle = value;
+        }
+
+        /// <summary>
+        /// The value of the lever
+        /// </summary>
+        public float value
+        {
+            get => m_Value;
         }
 
         /// <summary>
@@ -77,26 +82,17 @@ namespace UnityEngine.XR.Content.Interaction
             get => m_MinAngle;
             set => m_MinAngle = value;
         }
-
-        /// <summary>
-        /// Events to trigger when the lever activates
-        /// </summary>
-        public UnityEvent onLeverActivate => m_OnLeverActivate;
-
-        /// <summary>
-        /// Events to trigger when the lever deactivates
-        /// </summary>
-        public UnityEvent onLeverDeactivate => m_OnLeverDeactivate;
         
         [SerializeField]
         [Tooltip("Event that triggers when the lever position changes")]
         UnityEvent<int> m_OnPositionChanged = new UnityEvent<int>();
-
-        /// <summary>
-        /// Event that triggers when the lever position changes
-        /// </summary>
         public UnityEvent<int> onPositionChanged => m_OnPositionChanged;
-        
+
+        private void Start()
+        {
+            SetHandleAngle(0);
+        }
+
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -116,28 +112,32 @@ namespace UnityEngine.XR.Content.Interaction
             m_Interactor = args.interactorObject;
         }
 
+        private int m_currentGear = 0;
+
         void EndGrab(SelectExitEventArgs args)
         {
-            if (0.7 > m_Value && m_Position < 4)
+            print(m_Value);
+            
+            if (m_Value > 40 && m_currentGear < 4)
             {
-                m_Position += 1;
+                m_currentGear += 1;
+                onPositionChanged.Invoke(m_currentGear);
             }
             
-            else if (m_Value < -0.7 && m_Position > -1)
+            else if (m_Value < -40 && m_currentGear > -1)
             {
-                m_Position -= 1;
+                m_currentGear -= 1;
+                onPositionChanged.Invoke(m_currentGear);
             }
             
-            SnapToNearestPosition();
             m_Interactor = null;
-
-            OnPositionChanged();
+            SetHandleAngle(0);
         }
 
         public override void ProcessInteractable(XRInteractionUpdateOrder.UpdatePhase updatePhase)
         {
             base.ProcessInteractable(updatePhase);
-
+        
             if (updatePhase == XRInteractionUpdateOrder.UpdatePhase.Dynamic)
             {
                 if (isSelected)
@@ -156,49 +156,14 @@ namespace UnityEngine.XR.Content.Interaction
             return direction.normalized;
         }
 
-        float m_CurrentAngle;
-
         void UpdateValue()
         {
             var lookDirection = GetLookDirection();
             var lookAngle = Mathf.Atan2(lookDirection.z, lookDirection.y) * Mathf.Rad2Deg;
 
-            // Плавно обновляем текущий угол рычага
-            m_CurrentAngle = Mathf.Clamp(lookAngle, m_MinAngle, m_MaxAngle);
-            SetHandleAngle(m_CurrentAngle);
-            
-            
+            m_Value = Mathf.Clamp(lookAngle, m_MinAngle, m_MaxAngle);
+            SetHandleAngle(m_Value);
         }
-        
-        void SnapToNearestPosition()
-        {
-            SetHandleAngle(0);
-        }
-        
-        
-        void OnPositionChanged()
-        {
-            // Здесь можно добавить логику, которая будет выполняться при изменении позиции рычага
-            Debug.Log($"Lever position changed to {m_Position}");
-            m_OnPositionChanged.Invoke(m_Position);
-        }
-
-        // void SetValue(float newValue, bool forceRotation = false)
-        // {
-        //     if (m_Position == position)
-        //     {
-        //         if (forceRotation)
-        //             SetHandleAngle(m_MinAngle + position * ((m_MaxAngle - m_MinAngle) / 3));
-        //         return;
-        //     }
-        //
-        //     m_Position = position;
-        //
-        //     // Здесь можно добавить вызовы событий или другую логику, которая должна выполняться при изменении позиции
-        //
-        //     if (!isSelected && (m_LockToValue || forceRotation))
-        //         SetHandleAngle(m_MinAngle + position * ((m_MaxAngle - m_MinAngle) / 3));
-        // }
 
         void SetHandleAngle(float angle)
         {
@@ -223,11 +188,6 @@ namespace UnityEngine.XR.Content.Interaction
 
             Gizmos.color = Color.red;
             Gizmos.DrawLine(angleStartPoint, angleMinPoint);
-        }
-
-        void OnValidate()
-        {
-            SetHandleAngle(m_MinAngle + m_Position * ((m_MaxAngle - m_MinAngle) / 3));
         }
     }
 }

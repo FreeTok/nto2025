@@ -14,8 +14,10 @@ public class CarControllerVR : MonoBehaviour
     private float currentSteerAngle, currentbreakForce;
     
     // Settings
-    [Space, SerializeField] private float motorForce, breakForce, maxSteerAngle;
-    
+    [Space, SerializeField] private float breakForce, maxSteerAngle;
+    [SerializeField] private float[] motorForces; 
+    private float _motorForce;
+
     [Space]
     // Wheel Colliders
     [SerializeField] private WheelCollider frontLeftWheelCollider;
@@ -32,7 +34,7 @@ public class CarControllerVR : MonoBehaviour
     [SerializeField]
     private XRKnob wheel;
     [SerializeField]
-    private XRGearBox gearBox;
+    private XRGearBox2 gearBox;
     
     [SerializeField] private InputActionReference m_gasInputAction, m_brakeInputAction;
 
@@ -55,7 +57,10 @@ public class CarControllerVR : MonoBehaviour
 
     void OnLeverPositionChanged(int newPosition)
     {
-        _currentGear = newPosition;
+        _currentGear = newPosition + 1;
+        _motorForce = motorForces[_currentGear];
+        print(_currentGear);
+        print(_motorForce);
     }
 
     private void FixedUpdate() {
@@ -96,38 +101,24 @@ public class CarControllerVR : MonoBehaviour
     private void HandleMotor() {
         if (!isVR)
         {
-            frontLeftWheelCollider.motorTorque = verticalInput * motorForce;
-            frontRightWheelCollider.motorTorque = verticalInput * motorForce;
+            frontLeftWheelCollider.motorTorque = verticalInput * motorForces[2];
+            frontRightWheelCollider.motorTorque = verticalInput * motorForces[2];
             ApplyBreaking();
             return;
         }
         
-        
-        switch (_currentGear)
+        print(_motorForce);
+
+        if (_currentGear == 1)
         {
-            case -1:
-                print("-1");
-                break;
-            case 0:
-                print("N");
-                break;
-            case 1:
-                print("1");
-                break;
-            case 2:
-                print("2");
-                break;
-            case 3:
-                print("3");
-                break;
-            case 4:
-                print("4");
-                break;
+            currentbreakForce = breakInput * breakForce;
+            ApplyBreaking();
+
+            return;
         }
         
-        // frontLeftWheelCollider.motorTorque = verticalInput * motorForce;
-        // frontRightWheelCollider.motorTorque = verticalInput * motorForce;
-
+        frontLeftWheelCollider.motorTorque = verticalInput * _motorForce;
+        frontRightWheelCollider.motorTorque = verticalInput * _motorForce;
         
         currentbreakForce = breakInput * breakForce;
         ApplyBreaking();
