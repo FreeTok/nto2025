@@ -83,7 +83,7 @@ public class CarControllerVR : MonoBehaviour
 
         else
         {
-            horizontalInput = wheel.value;
+            horizontalInput = 2 * wheel.value - 1;
 
             if (wheel.isSelected)
             {
@@ -94,7 +94,15 @@ public class CarControllerVR : MonoBehaviour
     }
 
     private void HandleMotor() {
-
+        if (!isVR)
+        {
+            frontLeftWheelCollider.motorTorque = verticalInput * motorForce;
+            frontRightWheelCollider.motorTorque = verticalInput * motorForce;
+            ApplyBreaking();
+            return;
+        }
+        
+        
         switch (_currentGear)
         {
             case 0:
