@@ -34,15 +34,17 @@ public class CarControllerVR : MonoBehaviour
     [SerializeField]
     private XRLever transmission;
     
-    [SerializeField] private InputActionProperty m_gasInputAction, m_brakeInputAction;
+    [SerializeField] private InputActionReference m_gasInputAction, m_brakeInputAction;
 
-    private void OnEnable()
-    {
-        m_gasInputAction.EnableDirectAction();
-        m_brakeInputAction.EnableDirectAction();
-    }
+    //private void OnEnable()
+    //{
+    //    m_gasInputAction.EnableDirectAction();
+    //    m_brakeInputAction.EnableDirectAction();
+    //}
 
     private void FixedUpdate() {
+        //print(m_gasInputAction.action?.ReadValue<float>());
+
         GetInput();
         HandleMotor();
         HandleSteering();
@@ -68,8 +70,8 @@ public class CarControllerVR : MonoBehaviour
 
             if (wheel.isSelected)
             {
-                horizontalInput = m_gasInputAction.action?.ReadValue<float>() ?? 0f;
-                breakInput = m_gasInputAction.action?.ReadValue<float>() ?? 0f;
+                verticalInput = m_gasInputAction.action?.ReadValue<float>() ?? 0f;
+                breakInput = m_brakeInputAction.action?.ReadValue<float>() ?? 0f;
             }
         }
     }
