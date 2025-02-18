@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using Unity.VisualScripting;
+//using Unity.VisualScripting;
 using UnityEngine;
 
 public class DroneSimpleControl : MonoBehaviour
@@ -50,7 +50,7 @@ public class DroneSimpleControl : MonoBehaviour
 
     //======================================== MAIN METHODS =========================================
 
-    private void Update()
+    /*private void Update()
     {
         Vector2 lInput, rInput;
         if (!reverseJoysticks) // left - up/down/rotate, right - forward/backward/sideward
@@ -88,7 +88,7 @@ public class DroneSimpleControl : MonoBehaviour
         {
             transform.Rotate(0, rotateInput * rotateSpeed * Time.deltaTime, 0);
         }
-    }
+    }*/
 
     private void FixedUpdate()
     {
