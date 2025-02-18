@@ -105,22 +105,29 @@ public class CarControllerVR : MonoBehaviour
         
         switch (_currentGear)
         {
+            case -1:
+                print("-1");
+                break;
             case 0:
-                breakForce = 1;
-                print("parking");
-                break;
-            case 1:
-                frontLeftWheelCollider.motorTorque = verticalInput * -motorForce;
-                frontRightWheelCollider.motorTorque = verticalInput * -motorForce;
-                break;
-            case 2:
-                frontLeftWheelCollider.motorTorque = verticalInput * motorForce;
-                frontRightWheelCollider.motorTorque = verticalInput * motorForce;
-                break;
-            case 3:
                 print("N");
                 break;
+            case 1:
+                print("1");
+                break;
+            case 2:
+                print("2");
+                break;
+            case 3:
+                print("3");
+                break;
+            case 4:
+                print("4");
+                break;
         }
+        
+        // frontLeftWheelCollider.motorTorque = verticalInput * motorForce;
+        // frontRightWheelCollider.motorTorque = verticalInput * motorForce;
+
         
         currentbreakForce = breakInput * breakForce;
         ApplyBreaking();

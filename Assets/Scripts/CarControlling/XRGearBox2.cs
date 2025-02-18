@@ -118,8 +118,20 @@ namespace UnityEngine.XR.Content.Interaction
 
         void EndGrab(SelectExitEventArgs args)
         {
+            if (0.7 > m_Value && m_Position < 4)
+            {
+                m_Position += 1;
+            }
+            
+            else if (m_Value < -0.7 && m_Position > -1)
+            {
+                m_Position -= 1;
+            }
+            
             SnapToNearestPosition();
             m_Interactor = null;
+
+            OnPositionChanged();
         }
 
         public override void ProcessInteractable(XRInteractionUpdateOrder.UpdatePhase updatePhase)
