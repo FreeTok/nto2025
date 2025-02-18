@@ -113,7 +113,7 @@ namespace UnityEngine.XR.Content.Interaction
 
         void EndGrab(SelectExitEventArgs args)
         {
-            SetValue(m_Position, true);
+            SnapToNearestPosition();
             m_Interactor = null;
         }
 
@@ -139,25 +139,32 @@ namespace UnityEngine.XR.Content.Interaction
             return direction.normalized;
         }
 
+        float m_CurrentAngle;
 
         void UpdateValue()
         {
             var lookDirection = GetLookDirection();
             var lookAngle = Mathf.Atan2(lookDirection.z, lookDirection.y) * Mathf.Rad2Deg;
 
-            if (m_MinAngle < m_MaxAngle)
-                lookAngle = Mathf.Clamp(lookAngle, m_MinAngle, m_MaxAngle);
-            else
-                lookAngle = Mathf.Clamp(lookAngle, m_MaxAngle, m_MinAngle);
-
-            // Calculate the angle range for each position
+            // Плавно обновляем текущий угол рычага
+            m_CurrentAngle = Mathf.Clamp(lookAngle, m_MinAngle, m_MaxAngle);
+            SetHandleAngle(m_CurrentAngle);
+        }
+        
+        void SnapToNearestPosition()
+        {
+            // Вычисляем диапазон углов для каждой позиции
             float angleRange = (m_MaxAngle - m_MinAngle) / 3;
-            int newPosition = Mathf.RoundToInt((lookAngle - m_MinAngle) / angleRange);
+            int newPosition = Mathf.RoundToInt((m_CurrentAngle - m_MinAngle) / angleRange);
 
-            // Clamp the position to be within 0 to 3
+            // Ограничиваем позицию в пределах 0-3
             newPosition = Mathf.Clamp(newPosition, 0, 3);
 
-            SetHandleAngle(m_MinAngle + newPosition * angleRange);
+            // Вычисляем угол для новой позиции
+            float targetAngle = m_MinAngle + newPosition * angleRange;
+
+            // Плавно перемещаем рычаг к целевой позиции
+            SetHandleAngle(targetAngle);
 
             if (m_Position != newPosition)
             {
