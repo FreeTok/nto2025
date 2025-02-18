@@ -47,7 +47,7 @@ public class DisketManager : MonoBehaviour
             dsk.transform.SetParent(this.transform);
             dsk.GetComponent<Rigidbody>().isKinematic = true;
             //dsk.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
-            dsk.transform.rotation.SetEulerAngles(startRotation);
+            dsk.transform.rotation = new Quaternion(0, 0, 0, 0);
             
         }
     }
