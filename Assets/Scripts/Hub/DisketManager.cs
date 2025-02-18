@@ -33,6 +33,7 @@ public class DisketManager : MonoBehaviour
             else if(loggedState == 1)
             {
                 loggedState = 2;
+                
                 fadeScript.StartFade(dsk.GetComponent<DisketHolder>().sceneNum);
             }
         }
@@ -46,6 +47,7 @@ public class DisketManager : MonoBehaviour
             dsk.GetComponent<XRGrabInteractable>().enabled = false;
             dsk.transform.SetParent(this.transform);
             dsk.GetComponent<Rigidbody>().isKinematic = true;
+            this.gameObject.GetComponent<AudioSource>().Play();
             //dsk.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
             dsk.transform.rotation = new Quaternion(0, 0, 0, 0);
             

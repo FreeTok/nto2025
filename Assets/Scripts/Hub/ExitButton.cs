@@ -11,6 +11,7 @@ public class ExitButton : MonoBehaviour
         if (!logged)
         {
             fade.StartFade(-1);
+            this.gameObject.GetComponent<AudioSource>().Play();
             logged = true;
         }
         
