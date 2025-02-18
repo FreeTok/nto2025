@@ -659,11 +659,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79ebfd0db8f377d47a97d2031b57b3a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCamera: {fileID: 1345927197}
-  layerMask: 3
-  maxPanelDistance: 5
-  minPanelDistance: 3
-  floatingCanvas: {fileID: 0}
+  fader: {fileID: 0}
 --- !u!114 &58174885
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -684,6 +680,12 @@ MonoBehaviour:
   lowerDistanceThreshold: 0.01
   upperAngleThreshold: 45
   upperDistanceThreshold: 0.5
+  targetRotation: {x: 0, y: 0, z: 0, w: 0}
+  panelRotation: {x: 0, y: 0, z: 0, w: 0}
+  eulerTargetRot: {x: 0, y: 0, z: 0}
+  eulerPanelRot: {x: 0, y: 0, z: 0}
+  angle: 0
+  followNow: 0
 --- !u!1 &59007980
 GameObject:
   m_ObjectHideFlags: 0
@@ -4877,7 +4879,7 @@ GameObject:
   - component: {fileID: 483872704}
   - component: {fileID: 483872703}
   m_Layer: 3
-  m_Name: Text Button (2)
+  m_Name: CloseInterface
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4965,7 +4967,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 483872705}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1763772948}
+        m_TargetAssemblyTypeName: FloatingInterface, Assembly-CSharp
+        m_MethodName: CloseInterface
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &483872705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12533,7 +12547,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Text
+  m_text: Go to hub
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f675742eaf9c20a4f909d78ee7a14fed, type: 2}
   m_sharedMaterial: {fileID: 4687939059374929122, guid: f675742eaf9c20a4f909d78ee7a14fed,
@@ -20066,6 +20080,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1763772946}
+  - component: {fileID: 1763772948}
   - component: {fileID: 1763772947}
   m_Layer: 3
   m_Name: FloatingPanel
@@ -20106,11 +20121,30 @@ MonoBehaviour:
   camera: {fileID: 0}
   followSpeed: 5
   rotateSpeed: 5
-  distanceFromCamera: 2
+  distanceFromCamera: 1
   lowerAngleThreshold: 5
   lowerDistanceThreshold: 0.01
   upperAngleThreshold: 45
   upperDistanceThreshold: 0.5
+  targetRotation: {x: 0, y: 0, z: 0, w: 0}
+  panelRotation: {x: 0, y: 0, z: 0, w: 0}
+  eulerTargetRot: {x: 0, y: 0, z: 0}
+  eulerPanelRot: {x: 0, y: 0, z: 0}
+  angle: 0
+  followNow: 0
+--- !u!114 &1763772948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1763772945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79ebfd0db8f377d47a97d2031b57b3a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fader: {fileID: 792549420}
 --- !u!1 &1768498958
 GameObject:
   m_ObjectHideFlags: 0
@@ -20125,7 +20159,7 @@ GameObject:
   - component: {fileID: 1768498961}
   - component: {fileID: 1768498960}
   m_Layer: 3
-  m_Name: Text Button (1)
+  m_Name: Hub
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20213,7 +20247,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1768498962}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1763772948}
+        m_TargetAssemblyTypeName: FloatingInterface, Assembly-CSharp
+        m_MethodName: GoToHub
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1768498962
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23067,7 +23113,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Text
+  m_text: Close Interface
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f675742eaf9c20a4f909d78ee7a14fed, type: 2}
   m_sharedMaterial: {fileID: 4687939059374929122, guid: f675742eaf9c20a4f909d78ee7a14fed,
@@ -27690,7 +27736,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Text
+  m_text: Restart scene
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f675742eaf9c20a4f909d78ee7a14fed, type: 2}
   m_sharedMaterial: {fileID: 4687939059374929122, guid: f675742eaf9c20a4f909d78ee7a14fed,
@@ -27794,7 +27840,7 @@ GameObject:
   - component: {fileID: 5289182683436730011}
   - component: {fileID: 7920265471893171671}
   m_Layer: 3
-  m_Name: Text Button
+  m_Name: Restart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27873,7 +27919,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5289182683436730010}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1763772948}
+        m_TargetAssemblyTypeName: FloatingInterface, Assembly-CSharp
+        m_MethodName: RestartScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &5289182683436730013
 CanvasRenderer:
   m_ObjectHideFlags: 0
