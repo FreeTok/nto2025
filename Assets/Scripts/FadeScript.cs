@@ -36,7 +36,10 @@ public class FadeScript : MonoBehaviour
             else
             {
                 //SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(sc));
-                SceneManager.LoadScene(sc);
+                if (sc >= 0)
+                    SceneManager.LoadScene(sc);
+                else
+                    Application.Quit();
             }
 
         }
