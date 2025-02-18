@@ -149,6 +149,18 @@ namespace UnityEngine.XR.Content.Interaction
             // Плавно обновляем текущий угол рычага
             m_CurrentAngle = Mathf.Clamp(lookAngle, m_MinAngle, m_MaxAngle);
             SetHandleAngle(m_CurrentAngle);
+            
+            float angleRange = (m_MaxAngle - m_MinAngle) / 3;
+            int newPosition = Mathf.RoundToInt((m_CurrentAngle - m_MinAngle) / angleRange);
+
+            // Ограничиваем позицию в пределах 0-3
+            newPosition = Mathf.Clamp(newPosition, 0, 3);
+            
+            if (m_Position != newPosition)
+            {
+                m_Position = newPosition;
+                OnPositionChanged();
+            }
         }
         
         void SnapToNearestPosition()
