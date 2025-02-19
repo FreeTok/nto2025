@@ -173,6 +173,6 @@ public class CarControllerVR : MonoBehaviour
     {
         _currentSpeed = GetComponent<Rigidbody>().velocity.magnitude * 3.6f;
         print(_currentSpeed);
-        speedArrow.transform.rotation = Quaternion.Euler(0, 0f, -90 - _currentSpeed * 3f);
+        speedArrow.transform.localRotation = Quaternion.Euler(0, 0f, -90 - _currentSpeed * 3f);
     }
 }
