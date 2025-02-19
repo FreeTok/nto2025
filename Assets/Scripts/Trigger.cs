@@ -18,6 +18,7 @@ public class Trigger : MonoBehaviour
     
     private void OnTriggerExit(Collider other)
     {
+        print("exited");
         if (other.tag == tag)
         {
             onTriggerExit.Invoke();

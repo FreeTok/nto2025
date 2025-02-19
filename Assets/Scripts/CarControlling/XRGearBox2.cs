@@ -43,6 +43,10 @@ namespace UnityEngine.XR.Content.Interaction
 
         IXRSelectInteractor m_Interactor;
 
+        [Space] [SerializeField] private AudioClip ac_switchGear;
+        
+        private AudioSource _audioSource => GetComponent<AudioSource>();
+
         /// <summary>
         /// The object that is visually grabbed and manipulated
         /// </summary>
@@ -118,19 +122,22 @@ namespace UnityEngine.XR.Content.Interaction
         {
             print(m_Value);
             
-            if (m_Value > 40 && m_currentGear < 4)
+            if (m_Value > 40 && m_currentGear < 3)
             {
                 m_currentGear += 1;
                 onPositionChanged.Invoke(m_currentGear);
+                _audioSource.PlayOneShot(ac_switchGear);
             }
             
             else if (m_Value < -40 && m_currentGear > -1)
             {
                 m_currentGear -= 1;
                 onPositionChanged.Invoke(m_currentGear);
+                _audioSource.PlayOneShot(ac_switchGear);
             }
             
             m_Interactor = null;
+            
             SetHandleAngle(0);
         }
 

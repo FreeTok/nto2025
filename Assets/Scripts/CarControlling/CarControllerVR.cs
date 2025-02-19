@@ -54,6 +54,10 @@ public class CarControllerVR : MonoBehaviour
 
     private float _currentSpeed = 0f;
 
+    [SerializeField] private AudioSource motorAudio, reverseAudio;
+    
+    
+
     //private void OnEnable()
     //{
     //    m_gasInputAction.EnableDirectAction();
@@ -71,8 +75,31 @@ public class CarControllerVR : MonoBehaviour
 
     void OnLeverPositionChanged(int newPosition)
     {
-        _currentGear = newPosition + 1;
-        _motorForce = motorForces[_currentGear];
+        print($"new pos - {newPosition}");
+        _currentGear = newPosition;
+        _motorForce = motorForces[_currentGear + 1];
+
+        switch (_currentGear)
+        {
+            case -1:
+                reverseAudio.Play();
+                motorAudio.pitch = 1;
+                break;
+            case 0:
+                reverseAudio.Stop();
+                motorAudio.pitch = 0.5f;
+                break;
+            case 1:
+                motorAudio.pitch = 1f;
+                break;
+            case 2:
+                motorAudio.pitch = 0.75f;
+                break;
+            case 3:
+                motorAudio.pitch = 0.6f;
+                break;
+        }
+        
         print(_currentGear);
         print(_motorForce);
     }
@@ -172,7 +199,6 @@ public class CarControllerVR : MonoBehaviour
     private void UpdateSpeed()
     {
         _currentSpeed = GetComponent<Rigidbody>().velocity.magnitude * 3.6f;
-        print(_currentSpeed);
-        speedArrow.transform.localRotation = Quaternion.Euler(0, 0f, -90 - _currentSpeed * 3f);
+        speedArrow.transform.localRotation = Quaternion.Euler(0, 0f, -135f - _currentSpeed);
     }
 }
