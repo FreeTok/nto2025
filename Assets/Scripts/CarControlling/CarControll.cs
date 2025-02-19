@@ -8,7 +8,15 @@ using UnityEngine.XR.Interaction.Toolkit.Inputs;
 
 public class CarControllerVR : MonoBehaviour
 {
+    public enum VehicleType
+    {
+        bus,
+        truck,
+        car
+    }
+    
     [SerializeField] private bool isVR = false;
+    [SerializeField] private VehicleType vehicleType;
     
     private float horizontalInput, verticalInput, breakInput;
     private float currentSteerAngle, currentbreakForce;
@@ -17,6 +25,8 @@ public class CarControllerVR : MonoBehaviour
     [Space, SerializeField] private float breakForce, maxSteerAngle;
     [SerializeField] private float[] motorForces; 
     private float _motorForce;
+
+    [Space] [SerializeField] private GameObject speedArrow;
 
     [Space]
     // Wheel Colliders
@@ -36,9 +46,13 @@ public class CarControllerVR : MonoBehaviour
     [SerializeField]
     private XRGearBox2 gearBox;
     
+    [SerializeField] private XRLever breakLever;
+    
     [SerializeField] private InputActionReference m_gasInputAction, m_brakeInputAction;
 
     private int _currentGear;
+
+    private float _currentSpeed = 0f;
 
     //private void OnEnable()
     //{
@@ -64,13 +78,16 @@ public class CarControllerVR : MonoBehaviour
     }
 
     private void FixedUpdate() {
-        //print(m_gasInputAction.action?.ReadValue<float>());
-        
-        
         GetInput();
         HandleMotor();
         HandleSteering();
         UpdateWheels();
+        UpdateSpeed();
+
+        if (vehicleType == VehicleType.truck)
+        {
+            
+        }
     }
 
     private void GetInput() {
@@ -120,7 +137,7 @@ public class CarControllerVR : MonoBehaviour
         frontLeftWheelCollider.motorTorque = verticalInput * _motorForce;
         frontRightWheelCollider.motorTorque = verticalInput * _motorForce;
         
-        currentbreakForce = breakInput * breakForce;
+        currentbreakForce = breakLever.value ? 1000f : breakInput * breakForce;
         ApplyBreaking();
     }
 
@@ -150,5 +167,12 @@ public class CarControllerVR : MonoBehaviour
         wheelCollider.GetWorldPose(out pos, out rot);
         wheelTransform.rotation = rot;
         wheelTransform.position = pos;
+    }
+
+    private void UpdateSpeed()
+    {
+        _currentSpeed = GetComponent<Rigidbody>().velocity.magnitude * 3.6f;
+        print(_currentSpeed);
+        speedArrow.transform.rotation = Quaternion.Euler(0, 0f, -90 - _currentSpeed * 3f);
     }
 }
