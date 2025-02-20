@@ -25,6 +25,7 @@ upm-ci.log
 /[Ll]ogs/
 /[Mm]emoryCaptures/
 /[Vv]alidationSuiteResults/
+/Assets/Locations/
 
 # Project/user-specific settings using Settings Manager
 /ProjectSettings/Packages/

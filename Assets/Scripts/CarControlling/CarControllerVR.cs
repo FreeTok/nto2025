@@ -56,6 +56,10 @@ public class CarControllerVR : MonoBehaviour
 
     [SerializeField] private AudioSource motorAudio, reverseAudio;
     
+    [SerializeField] private GameObject connectedIco, unconnectedIco;
+    
+    [SerializeField] private GameObject[] insideColliders;
+    
     
 
     //private void OnEnable()
@@ -162,6 +166,12 @@ public class CarControllerVR : MonoBehaviour
             return;
         }
         
+        print($"Vertical inpuit - {verticalInput}");
+        foreach (var collider in insideColliders)
+        {
+            collider.SetActive(verticalInput <= 0);
+        }
+        
         for (int i = 0; i < wheelColliders.Count; i++)
         {
             print($"{i} - {verticalInput * _motorForce}");
@@ -221,6 +231,9 @@ public class CarControllerVR : MonoBehaviour
         {
             wheelTransforms.Add(wheelTransform);
         }
+        
+        connectedIco.SetActive(true);
+        unconnectedIco.SetActive(false);
     }
 
     public void DisconnectTruck(TrailerController trailer)
@@ -234,5 +247,13 @@ public class CarControllerVR : MonoBehaviour
         {
             wheelTransforms.Remove(wheelTransform);
         }
+        
+        connectedIco.SetActive(false);
+        unconnectedIco.SetActive(true);
     }
+
+    // public void Cones(bool isPhysics)
+    // {
+    //     Physics.IgnoreLayerCollision(LayerMask.NameToLayer("XRRIG"), LayerMask.NameToLayer("Cone"), isPhysics);
+    // }
 }
