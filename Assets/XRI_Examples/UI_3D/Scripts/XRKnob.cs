@@ -14,7 +14,7 @@ namespace UnityEngine.XR.Content.Interaction
         /// <summary>
         /// Helper class used to track rotations that can go beyond 180 degrees while minimizing accumulation error
         /// </summary>
-        struct TrackedRotation
+        public struct TrackedRotation
         {
             /// <summary>
             /// The anchor rotation we calculate an offset from
@@ -33,7 +33,7 @@ namespace UnityEngine.XR.Content.Interaction
 
             /// <summary>
             /// The total rotation that occurred from when this rotation started being tracked
-            /// </summary>
+            /// </summary>a
             public float totalOffset => m_AccumulatedAngle + m_CurrentOffset;
 
             /// <summary>
@@ -92,15 +92,15 @@ namespace UnityEngine.XR.Content.Interaction
 
         [SerializeField]
         [Tooltip("Whether this knob's rotation should be clamped by the angle limits")]
-        bool m_ClampedMotion = true;
+        protected bool m_ClampedMotion = true;
 
         [SerializeField]
         [Tooltip("Rotation of the knob at value '1'")]
-        float m_MaxAngle = 90.0f;
+        protected float m_MaxAngle = 90.0f;
 
         [SerializeField]
         [Tooltip("Rotation of the knob at value '0'")]
-        float m_MinAngle = -90.0f;
+        protected float m_MinAngle = -90.0f;
 
         [SerializeField]
         [Tooltip("Angle increments to support, if greater than '0'")]
@@ -118,16 +118,16 @@ namespace UnityEngine.XR.Content.Interaction
         [Tooltip("Events to trigger when the knob is rotated")]
         ValueChangeEvent m_OnValueChange = new ValueChangeEvent();
 
-        IXRSelectInteractor m_Interactor;
+        protected IXRSelectInteractor m_Interactor;
 
         bool m_PositionDriven = false;
         bool m_UpVectorDriven = false;
 
-        TrackedRotation m_PositionAngles = new TrackedRotation();
-        TrackedRotation m_UpVectorAngles = new TrackedRotation();
-        TrackedRotation m_ForwardVectorAngles = new TrackedRotation();
+        protected TrackedRotation m_PositionAngles = new TrackedRotation();
+        protected TrackedRotation m_UpVectorAngles = new TrackedRotation();
+        protected TrackedRotation m_ForwardVectorAngles = new TrackedRotation();
 
-        float m_BaseKnobRotation = 0.0f;
+        protected float m_BaseKnobRotation = 0.0f;
 
         /// <summary>
         /// The object that is visually grabbed and manipulated
@@ -192,7 +192,7 @@ namespace UnityEngine.XR.Content.Interaction
         /// </summary>
         public ValueChangeEvent onValueChange => m_OnValueChange;
 
-        void Start()
+        protected virtual void Start()
         {
             SetValue(m_Value);
             SetKnobRotation(ValueToRotation());
@@ -200,6 +200,7 @@ namespace UnityEngine.XR.Content.Interaction
 
         protected override void OnEnable()
         {
+            print("Enabled");
             base.OnEnable();
             selectEntered.AddListener(StartGrab);
             selectExited.AddListener(EndGrab);
@@ -242,7 +243,7 @@ namespace UnityEngine.XR.Content.Interaction
             }
         }
 
-        void UpdateRotation(bool freshCheck = false)
+        protected virtual void UpdateRotation(bool freshCheck = false)
         {
             // Are we in position offset or direction rotation mode?
             var interactorTransform = m_Interactor.GetAttachTransform(this);
@@ -329,7 +330,7 @@ namespace UnityEngine.XR.Content.Interaction
             SetValue(knobValue);
         }
 
-        void SetKnobRotation(float angle)
+        protected void SetKnobRotation(float angle)
         {
             if (m_AngleIncrement > 0)
             {
@@ -341,7 +342,7 @@ namespace UnityEngine.XR.Content.Interaction
                 m_Handle.localEulerAngles = new Vector3(0.0f, angle, 0.0f);
         }
 
-        void SetValue(float value)
+        protected void SetValue(float value)
         {
             if (m_ClampedMotion)
                 value = Mathf.Clamp01(value);
@@ -363,7 +364,7 @@ namespace UnityEngine.XR.Content.Interaction
             return m_ClampedMotion ? Mathf.Lerp(m_MinAngle, m_MaxAngle, m_Value) : Mathf.LerpUnclamped(m_MinAngle, m_MaxAngle, m_Value);
         }
 
-        void UpdateBaseKnobRotation()
+        protected void UpdateBaseKnobRotation()
         {
             m_BaseKnobRotation = Mathf.LerpUnclamped(m_MinAngle, m_MaxAngle, m_Value);
         }

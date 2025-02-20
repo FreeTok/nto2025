@@ -120,8 +120,6 @@ namespace UnityEngine.XR.Content.Interaction
 
         void EndGrab(SelectExitEventArgs args)
         {
-            print(m_Value);
-            
             if (m_Value > 40 && m_currentGear < 3)
             {
                 m_currentGear += 1;

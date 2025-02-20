@@ -32,13 +32,13 @@ public class CarControllerVR : MonoBehaviour
     // Wheel Colliders
     [SerializeField] private WheelCollider frontLeftWheelCollider;
     [SerializeField] private WheelCollider frontRightWheelCollider;
-    [SerializeField] private WheelCollider rearLeftWheelCollider;
-    [SerializeField] private WheelCollider rearRightWheelCollider;
+    
+    [SerializeField] private List<WheelCollider> wheelColliders;
+    [SerializeField] private List<Transform> wheelTransforms;
 
     // Wheels
     [SerializeField] private Transform frontLeftWheelTransform, frontRightWheelTransform;
-    [SerializeField] private Transform rearLeftWheelTransform, rearRightWheelTransform;
-
+    
     [Space]
     // VR
     [SerializeField]
@@ -108,8 +108,9 @@ public class CarControllerVR : MonoBehaviour
         GetInput();
         HandleMotor();
         HandleSteering();
-        UpdateWheels();
         UpdateSpeed();
+        UpdateWheels();
+
 
         if (vehicleType == VehicleType.truck)
         {
@@ -153,7 +154,7 @@ public class CarControllerVR : MonoBehaviour
         
         print(_motorForce);
 
-        if (_currentGear == 1)
+        if (_currentGear == 0)
         {
             currentbreakForce = breakInput * breakForce;
             ApplyBreaking();
@@ -161,18 +162,21 @@ public class CarControllerVR : MonoBehaviour
             return;
         }
         
-        frontLeftWheelCollider.motorTorque = verticalInput * _motorForce;
-        frontRightWheelCollider.motorTorque = verticalInput * _motorForce;
+        for (int i = 0; i < wheelColliders.Count; i++)
+        {
+            print($"{i} - {verticalInput * _motorForce}");
+            wheelColliders[i].motorTorque = verticalInput * _motorForce;
+        }
         
         currentbreakForce = breakLever.value ? 1000f : breakInput * breakForce;
         ApplyBreaking();
     }
 
     private void ApplyBreaking() {
-        frontRightWheelCollider.brakeTorque = currentbreakForce;
-        frontLeftWheelCollider.brakeTorque = currentbreakForce;
-        rearLeftWheelCollider.brakeTorque = currentbreakForce;
-        rearRightWheelCollider.brakeTorque = currentbreakForce;
+        for (int i = 0; i < wheelColliders.Count; i++)
+        {
+            wheelColliders[i].brakeTorque = currentbreakForce;
+        }
     }
 
     private void HandleSteering() {
@@ -182,13 +186,15 @@ public class CarControllerVR : MonoBehaviour
     }
 
     private void UpdateWheels() {
-        UpdateSingleWheel(frontLeftWheelCollider, frontLeftWheelTransform);
-        UpdateSingleWheel(frontRightWheelCollider, frontRightWheelTransform);
-        UpdateSingleWheel(rearRightWheelCollider, rearRightWheelTransform);
-        UpdateSingleWheel(rearLeftWheelCollider, rearLeftWheelTransform);
+        for (int i = 0; i < wheelColliders.Count; i++)
+        {
+            UpdateSingleWheel(wheelColliders[i], wheelTransforms[i]);
+        }
     }
 
-    private void UpdateSingleWheel(WheelCollider wheelCollider, Transform wheelTransform) {
+    private void UpdateSingleWheel(WheelCollider wheelCollider, Transform wheelTransform)
+    {
+        if (!wheelCollider || !wheelTransform) return; 
         Vector3 pos;
         Quaternion rot; 
         wheelCollider.GetWorldPose(out pos, out rot);
@@ -200,5 +206,28 @@ public class CarControllerVR : MonoBehaviour
     {
         _currentSpeed = GetComponent<Rigidbody>().velocity.magnitude * 3.6f;
         speedArrow.transform.localRotation = Quaternion.Euler(0, 0f, -135f - _currentSpeed);
+    }
+
+    public void ConnectTruck(TrailerController trailer)
+    {
+        trailer.GetComponent<HingeJoint>().connectedBody = GetComponent<Rigidbody>();
+        
+        foreach (var wheelCollider in trailer.wheelColliders)
+        {
+            wheelColliders.Add(wheelCollider);
+        }
+    }
+
+    public void DisconnectTruck(TrailerController trailer)
+    {
+        trailer.GetComponent<HingeJoint>().connectedBody = null;
+        foreach (var wheelCollider in trailer.wheelColliders)
+        {
+            wheelColliders.Remove(wheelCollider);
+        }
+        foreach (var wheelTransform in trailer.wheels)
+        {
+            wheelTransforms.Remove(wheelTransform);
+        }
     }
 }
