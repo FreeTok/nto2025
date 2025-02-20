@@ -12,7 +12,8 @@ public class CarControllerVR : MonoBehaviour
     {
         bus,
         truck,
-        car
+        car,
+        driftCar
     }
     
     [SerializeField] private bool isVR = false;
@@ -54,11 +55,18 @@ public class CarControllerVR : MonoBehaviour
 
     private float _currentSpeed = 0f;
 
-    [SerializeField] private AudioSource motorAudio, reverseAudio;
+    [SerializeField] private AudioSource motorAudio, reverseAudio, klapanAudio, driftAudio;
     
     [SerializeField] private GameObject connectedIco, unconnectedIco;
     
     [SerializeField] private GameObject[] insideColliders;
+    
+    [SerializeField] private float driftFactor = 0.9f; // Коэффициент бокового сцепления при заносе
+    [SerializeField] private float gripFactor = 1f; // Обычное сцепление колес
+    [SerializeField] private float driftThreshold = 10f; // Порог угла заноса, после которого начинается дрифт
+    [SerializeField] private float counterSteerStrength = 3f; // Сила авто-контрруления
+    
+    
     
     
 
@@ -116,11 +124,72 @@ public class CarControllerVR : MonoBehaviour
         UpdateWheels();
 
 
-        if (vehicleType == VehicleType.truck)
+        if (vehicleType == VehicleType.driftCar)
         {
-            
+            HandleDrift();
+            StabilizeCar();
         }
     }
+
+    [SerializeField] private GameObject[] smokes;
+    
+    private void HandleDrift() {
+        Rigidbody rb = GetComponent<Rigidbody>();
+
+        // Рассчитываем направление движения относительно направления машины
+        Vector3 velocityDirection = rb.velocity.normalized;
+        float forwardDot = Vector3.Dot(transform.forward, velocityDirection);
+        float rightDot = Vector3.Dot(transform.right, velocityDirection);
+    
+        float slipAngle = Mathf.Abs(Mathf.Atan2(rightDot, forwardDot) * Mathf.Rad2Deg); // Угол заноса
+
+        // Определяем, когда ослаблять сцепление
+        bool isSliding = slipAngle > driftThreshold && rb.velocity.magnitude > 5f;
+
+        WheelFrictionCurve rearFriction = wheelColliders[2].sidewaysFriction;
+    
+        if (isSliding) {
+            driftAudio.Play();
+            print("isSliding");
+
+            foreach (var smoke in smokes)
+            {
+                smoke.SetActive(true);
+            }
+            
+            rearFriction.stiffness = driftFactor; // Уменьшаем сцепление для дрифта
+        } else {
+            driftAudio.Stop();
+            rearFriction.stiffness = gripFactor; // Восстанавливаем сцепление
+            Invoke(nameof(DisableSmokes), 4);
+        }
+
+        wheelColliders[2].sidewaysFriction = rearFriction;
+        wheelColliders[3].sidewaysFriction = rearFriction;
+
+        // Автоматическая корректировка угла поворота при дрифте
+        if (isSliding) {
+            float counterSteer = -rightDot * counterSteerStrength;
+            currentSteerAngle += counterSteer;
+        }
+    }
+
+    private void DisableSmokes()
+    {
+        foreach (var smoke in smokes)
+        {
+            smoke.SetActive(false);
+        }    }
+    
+    void StabilizeCar() {
+        Rigidbody rb = GetComponent<Rigidbody>();
+
+        float speedFactor = Mathf.Clamp(rb.velocity.magnitude / 50f, 0f, 1f); // Чем быстрее едем, тем сильнее стабилизация
+        float stability = 5000f * speedFactor; 
+
+        rb.AddForce(-transform.up * stability);
+    }
+
 
     private void GetInput() {
         if (!isVR)
@@ -147,6 +216,8 @@ public class CarControllerVR : MonoBehaviour
         }
     }
 
+
+
     private void HandleMotor() {
         if (!isVR)
         {
@@ -167,6 +238,17 @@ public class CarControllerVR : MonoBehaviour
         }
         
         print($"Vertical inpuit - {verticalInput}");
+
+        if (verticalInput > 0)
+        {
+            Invoke(nameof(EnableKlapan), 1f);
+        }
+
+        else
+        {
+            klapanAudio.Stop();
+        }
+        
         foreach (var collider in insideColliders)
         {
             collider.SetActive(verticalInput <= 0);
@@ -180,6 +262,11 @@ public class CarControllerVR : MonoBehaviour
         
         currentbreakForce = breakLever.value ? 1000f : breakInput * breakForce;
         ApplyBreaking();
+    }
+    
+    private void EnableKlapan()
+    {
+        klapanAudio.Play();
     }
 
     private void ApplyBreaking() {
