@@ -216,6 +216,11 @@ public class CarControllerVR : MonoBehaviour
         {
             wheelColliders.Add(wheelCollider);
         }
+        
+        foreach (var wheelTransform in trailer.wheels)
+        {
+            wheelTransforms.Add(wheelTransform);
+        }
     }
 
     public void DisconnectTruck(TrailerController trailer)
