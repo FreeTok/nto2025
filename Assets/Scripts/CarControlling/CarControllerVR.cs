@@ -63,7 +63,7 @@ public class CarControllerVR : MonoBehaviour
     
     [SerializeField] private float driftFactor = 0.9f; // Коэффициент бокового сцепления при заносе
     [SerializeField] private float gripFactor = 1f; // Обычное сцепление колес
-    [SerializeField] private float driftThreshold = 10f; // Порог угла заноса, после которого начинается дрифт
+    [SerializeField] private float driftThreshold = 4f; // Порог угла заноса, после которого начинается дрифт
     [SerializeField] private float counterSteerStrength = 3f; // Сила авто-контрруления
     
     
@@ -149,7 +149,11 @@ public class CarControllerVR : MonoBehaviour
         WheelFrictionCurve rearFriction = wheelColliders[2].sidewaysFriction;
     
         if (isSliding) {
-            driftAudio.Play();
+            if (!driftAudio.isPlaying)
+            {
+                driftAudio.Play();
+
+            }
             print("isSliding");
 
             foreach (var smoke in smokes)
@@ -158,10 +162,10 @@ public class CarControllerVR : MonoBehaviour
             }
             
             rearFriction.stiffness = driftFactor; // Уменьшаем сцепление для дрифта
-        } else {
-            driftAudio.Stop();
+        } 
+        else {
             rearFriction.stiffness = gripFactor; // Восстанавливаем сцепление
-            Invoke(nameof(DisableSmokes), 4);
+            Invoke(nameof(DisableSmokes), 5);
         }
 
         wheelColliders[2].sidewaysFriction = rearFriction;
@@ -179,7 +183,9 @@ public class CarControllerVR : MonoBehaviour
         foreach (var smoke in smokes)
         {
             smoke.SetActive(false);
-        }    }
+        }
+        driftAudio.Stop();
+    }
     
     void StabilizeCar() {
         Rigidbody rb = GetComponent<Rigidbody>();
@@ -237,7 +243,7 @@ public class CarControllerVR : MonoBehaviour
             return;
         }
         
-        print($"Vertical inpuit - {verticalInput}");
+        // print($"Vertical inpuit - {verticalInput}");
 
         if (verticalInput > 0)
         {
@@ -256,7 +262,7 @@ public class CarControllerVR : MonoBehaviour
         
         for (int i = 0; i < wheelColliders.Count; i++)
         {
-            print($"{i} - {verticalInput * _motorForce}");
+            // print($"{i} - {verticalInput * _motorForce}");
             wheelColliders[i].motorTorque = verticalInput * _motorForce;
         }
         

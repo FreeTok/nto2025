@@ -22,6 +22,33 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "DroneMovement",
+                    "type": "Value",
+                    "id": "a98ec205-b9ba-4351-b825-a11f54b9d6c4",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "DroneHeight",
+                    "type": "Value",
+                    "id": "943a3d8c-aa48-4d30-b9f1-072b4871252b",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "DroneButton",
+                    "type": "Button",
+                    "id": "2e382830-8310-4a14-9319-fa25234a0acf",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -77,6 +104,39 @@
                     "processors": "",
                     "groups": "Generic XR Controller",
                     "action": "BreakInput",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d9d0c64b-8539-45fc-8377-420de73cd9a3",
+                    "path": "<XRController>{LeftHand}/Primary2DAxis",
+                    "interactions": "",
+                    "processors": "StickDeadzone",
+                    "groups": "Continuous Move",
+                    "action": "DroneMovement",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dce8f368-746c-434b-8e13-b3669e03f1f1",
+                    "path": "<XRController>{RightHand}/Primary2DAxis",
+                    "interactions": "",
+                    "processors": "StickDeadzone",
+                    "groups": "Continuous Move",
+                    "action": "DroneHeight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "21010fac-ac87-4f6f-bce4-fc8dcec30f6f",
+                    "path": "<XRController>{RightHand}/{PrimaryButton}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DroneButton",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
